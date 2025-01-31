@@ -1,14 +1,24 @@
-from sqlalchemy import create_engine,Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 
 from api.settings.config import get_env
 
-Engine = create_engine( # SQLAlchemyがデータベースと通信するための「エンジン」を作成
+# 非同期エンジンを作成
+Engine = create_async_engine(
     get_env().database_url,
     echo=False
 )
+# セッションを作成
+SessionLocal = sessionmaker(bind=Engine, class_=AsyncSession, expire_on_commit=False)
+                            
 Base = declarative_base()
+
+# Sessionを取得する依存関数
+async def get_db():
+  async with SessionLocal() as session:
+    yield session
 
 class Task(Base):
   __tablename__ = "tasks"

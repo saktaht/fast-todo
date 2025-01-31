@@ -5,10 +5,12 @@ import os
 from settings.config import PROJECT_ROOT
 from dotenv import load_dotenv
 from logging.config import fileConfig
+from sqlalchemy import create_engine
 
 from alembic import context
 
 from api.models.task import Base, Engine
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -55,6 +57,8 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+sync_url = os.getenv('DATABASE_URL').replace("postgresql+asyncpg", "postgresql+psycopg2")
+sync_engine = create_engine(sync_url, echo=True)
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
@@ -68,12 +72,13 @@ def run_migrations_online() -> None:
     #     prefix="sqlalchemy.",
     #     poolclass=pool.NullPool,
     # )
-    url = config.get_main_option("sqlalchemy.url")
-    connectable = Engine
+    # url = config.get_main_option("sqlalchemy.url")
+    # connectable = Engine
+    connectable = sync_engine
 
     with connectable.connect() as connection:
         context.configure(
-            url=url,
+            url=sync_url,
             connection=connection, 
             target_metadata=target_metadata
         )

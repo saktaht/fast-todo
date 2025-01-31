@@ -8,7 +8,7 @@ services:
       - .dockervenv:/src/.venv
       - .:/src
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASS}@db:${DB_PORT}/${DB_NAME}
+      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASS}@db:${DB_PORT}/${DB_NAME}
     ports:
       - 8000:8000 # ホストマシンのポート8000を、docker内のポート8000に接続する
     env_file:
