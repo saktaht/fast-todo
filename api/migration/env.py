@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 
 from alembic import context
 
-from api.models.task import Base, Engine
+from api.models.task import Base
 
 
 # this is the Alembic Config object, which provides
@@ -57,6 +57,7 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+# migrateは同期通信で行わないといけないので、asyncpgからpsycopg2に変更
 sync_url = os.getenv('DATABASE_URL').replace("postgresql+asyncpg", "postgresql+psycopg2")
 sync_engine = create_engine(sync_url, echo=True)
 

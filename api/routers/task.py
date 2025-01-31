@@ -11,9 +11,9 @@ router = APIRouter()
 
 
 @router.get("/tasks", tags=["task"], response_model=list[task_schema.Task])
-async def list_tasks():
-    return [task_schema.Task(id=1, title="1つ目のTodoタスク")]
-
+async def list_tasks(db: AsyncSession = Depends(get_db)):
+    return await task_crud.get_tasks_with_done(db)
+  
 # cruds.taskで作ったORMモデルをJSON形式で返す / models.task.TaskをTaskCreateResponseに変換
 # TaskCreateResponseでORMを使うように設定されているため、(id, title)を使って自動的にインスタンスを作成
 @router.post("/tasks", tags=["task"], response_model=task_schema.TaskCreateResponse)
