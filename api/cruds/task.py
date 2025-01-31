@@ -31,8 +31,7 @@ async def get_tasks_with_done(db: AsyncSession) -> list[tuple[int, str, bool]]:
   )
   return result.all() #クエリ結果をリストとして取得
 
-
-# updateの実装
+# 番号(task_id)を指定したいときに呼び出す関数 / routersでtask_idを指定するときに使う
 async def get_task(db: AsyncSession, task_id: int) -> task_model.Task | None:
   result: Result = await db.execute(
     # SELECT * FROM tasks WHERE id = task_id; に相当するクエリ
@@ -41,6 +40,7 @@ async def get_task(db: AsyncSession, task_id: int) -> task_model.Task | None:
   task: tuple[task_model.Task] | None = result.first()
   return task[0] if task is not None else None # タスクがあれば、task[0]でタプルからtask_model.Taskを取り出す
 
+# updateの実装
 async def update_task(
   db: AsyncSession, task_create: task_schema.TaskCreate, original: task_model.Task
 ) -> task_model.Task:
@@ -49,3 +49,8 @@ async def update_task(
   await db.commit()
   await db.refresh(original)
   return original
+
+# deleteの実装
+async def delete_task(db: AsyncSession, original: task_model.Task) -> None:
+  await db.delete(original)
+  await db.commit()
