@@ -8,6 +8,10 @@ class Environment(BaseSettings):
     """ 環境変数を読み込む
     """
     database_url: str
+    db_user: str
+    db_pass: str
+    db_name: str
+    db_port: str
 
     model_config = {
         "env_file": ".env"
