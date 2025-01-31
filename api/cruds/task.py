@@ -16,6 +16,7 @@ async def create_task(
   await db.refresh(task) # idを取得、最新のデータを反映
   return task # SQLAlchemyのORMモデルを返す
 
+
 # read(完了したかどうか取得)
 async def get_tasks_with_done(db: AsyncSession) -> list[tuple[int, str, bool]]:
   result: Result = await ( # 非同期でSQLを実行
@@ -29,3 +30,22 @@ async def get_tasks_with_done(db: AsyncSession) -> list[tuple[int, str, bool]]:
     )
   )
   return result.all() #クエリ結果をリストとして取得
+
+
+# updateの実装
+async def get_task(db: AsyncSession, task_id: int) -> task_model.Task | None:
+  result: Result = await db.execute(
+    # SELECT * FROM tasks WHERE id = task_id; に相当するクエリ
+    select(task_model.Task).filter(task_model.Task.id == task_id)
+  )
+  task: tuple[task_model.Task] | None = result.first()
+  return task[0] if task is not None else None # タスクがあれば、task[0]でタプルからtask_model.Taskを取り出す
+
+async def update_task(
+  db: AsyncSession, task_create: task_schema.TaskCreate, original: task_model.Task
+) -> task_model.Task:
+  original.title = task_create.title  # 既存のタスクのタイトルを新しい値に更新
+  db.add(original)
+  await db.commit()
+  await db.refresh(original)
+  return original
