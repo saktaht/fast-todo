@@ -1,8 +1,36 @@
 services:
   demo-app:
-    build: .
+    container_name: demo-app
+    build: 
+      dockerfile: docker/app/dockerfile
+      context: .
     volumes:
       - .dockervenv:/src/.venv
       - .:/src
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASS}@db:${DB_PORT}/${DB_NAME}
     ports:
       - 8000:8000 # ホストマシンのポート8000を、docker内のポート8000に接続する
+    env_file:
+      - .env
+
+  db: 
+    container_name: db
+    build: 
+      dockerfile: docker/db/dockerfile
+      context: .
+    volumes:
+      - type: volume
+        source: db-store
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+
+volumes:
+  db-store:
