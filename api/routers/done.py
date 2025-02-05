@@ -9,7 +9,7 @@ from api.models.task import get_db
 router = APIRouter()
 
 # putやdeleteメソッドでresponseが必要ない場合、returnで何も返さない
-@router.put("/tasks/{task_id}/done", tags=["done"], response_model=done_schema.DoneResponse)
+@router.put("/{task_id}/done", response_model=done_schema.DoneResponse)
 async def mark_task_as_done(task_id: int, db: AsyncSession = Depends(get_db)):
   done = await done_crud.get_done(db, task_id=task_id)
   if done is not None:
@@ -19,7 +19,7 @@ async def mark_task_as_done(task_id: int, db: AsyncSession = Depends(get_db)):
   
   
 # 完了フラグを消す
-@router.delete("/tasks/{task_id}/done", tags=["done"], response_model=None)
+@router.delete("/{task_id}/done", response_model=None)
 async def unmark_task_as_done(task_id: int, db: AsyncSession = Depends(get_db)):
   done = await done_crud.get_done(db, task_id=task_id)
   if done is None:
