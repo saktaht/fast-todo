@@ -37,16 +37,10 @@ async def async_client() -> AsyncClient:
 
     app.dependency_overrides[get_db] = get_test_db
     # テスト用に非同期HTTPクライアントを返却
-    # async with AsyncClient(app=app, base_url="http://test") as client:
-    #     yield client
     async with AsyncClient(
       transport=ASGITransport(app=app), base_url="http://test"
     )as client:
       yield client
-    
-    # app.dependency_overrides.clear()
-    # # クリーンアップ
-    # await async_engine.dispose()
 
 
 @pytest.mark.asyncio

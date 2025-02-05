@@ -1,3 +1,6 @@
+# envファイルについて
+.env.exampleファイルにテンプレートを書いたので、それを元に.envファイルを作れば動くと思います
+
 # dockerの起動コマンドまとめ
 docker compose up --build --detach
 
