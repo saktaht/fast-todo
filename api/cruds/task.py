@@ -34,8 +34,7 @@ async def get_tasks_with_done(db: AsyncSession) -> list[tuple[int, str, bool]]:
 # 番号(task_id)を指定したいときに呼び出す関数 / routersでtask_idを指定するときに使う
 async def get_task(db: AsyncSession, task_id: int) -> task_model.Task | None:
   result: Result = await db.execute(
-    # SELECT * FROM tasks WHERE id = task_id; に相当するクエリ
-    select(task_model.Task).filter(task_model.Task.id == task_id)
+    select(task_model.Task).where(task_model.Task.id == task_id)
   )
   task: tuple[task_model.Task] | None = result.first()
   return task[0] if task is not None else None # タスクがあれば、task[0]でタプルからtask_model.Taskを取り出す

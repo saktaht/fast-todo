@@ -44,7 +44,7 @@ async def async_client() -> AsyncClient:
 
 
 @pytest.mark.asyncio
-async def test_create_and_read(async_client):
+async def test_create_and_read(async_client: AsyncClient):
     response = await async_client.post("/tasks", json={"title": "テストタスク"})
     assert response.status_code == starlette.status.HTTP_200_OK
     response_obj = response.json()
@@ -59,7 +59,7 @@ async def test_create_and_read(async_client):
 
 
 @pytest.mark.asyncio
-async def test_done_flag(async_client):
+async def test_done_flag(async_client: AsyncClient):
     response = await async_client.post("/tasks", json={"title": "テストタスク2"})
     assert response.status_code == starlette.status.HTTP_200_OK
     response_obj = response.json()

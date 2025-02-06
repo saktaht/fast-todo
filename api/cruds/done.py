@@ -7,7 +7,7 @@ import api.models.task as task_model
 
 async def get_done(db: AsyncSession, task_id: int) -> task_model.Done | None:
   result: Result = await db.execute(
-    select(task_model.Done).filter(task_model.Done.id == task_id)
+    select(task_model.Done).where(task_model.Done.id == task_id)
   )
   done: tuple[task_model.Done] | None = result.first()
   return done[0] if done is not None else None

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship, sessionmaker, declarative_base
+from sqlalchemy.orm import relationship, sessionmaker, declarative_base, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
 from api.settings.config import get_env
@@ -23,15 +23,15 @@ class Task(Base):
   __tablename__ = "tasks"
   
   # Columnは1つ1つのカラムを定義
-  id = Column(Integer, primary_key=True)
-  title = Column(String(1024))
+  id: Mapped[int] = mapped_column(primary_key=True)
+  title: Mapped[str] = mapped_column(String(1024))
   
   # relationshipsはデーブル同士の関係性を定義
-  done = relationship("Done", back_populates="task", cascade="delete")
+  done: Mapped["Done"] = relationship(back_populates="task", cascade="delete")
   
 
 class Done(Base):
   __tablename__ = "dones"
   
-  id = Column(Integer, ForeignKey("tasks.id"), primary_key=True)
-  task = relationship("Task", back_populates="done")
+  id: Mapped[int] = mapped_column(ForeignKey("tasks.id"), primary_key=True)
+  task: Mapped["Task"] = relationship(back_populates="done")
