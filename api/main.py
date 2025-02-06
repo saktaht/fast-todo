@@ -5,8 +5,8 @@ from api.routers import task, done
 
 
 app = FastAPI()
-app.include_router(task.router)
-app.include_router(done.router)
+app.include_router(task.router, tags=["task"], prefix="/tasks")
+app.include_router(done.router, tags=["done"], prefix="/tasks")
 
 
 @app.get("/")
