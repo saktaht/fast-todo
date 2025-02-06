@@ -22,6 +22,9 @@ alembic upgrade head
 # test実行方法
 docker compose run --entrypoint "poetry run pytest" demo-app
 
+# git pushする前にすること
+- migrationしないとバージョンが違うって言われてエラーになる
+
 # 参考にした記事
 https://zenn.dev/sh0nk/books/537bb028709ab9
 
